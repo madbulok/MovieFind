@@ -1,0 +1,2 @@
+rootProject.name = "MovieFind"
+include ':app'
