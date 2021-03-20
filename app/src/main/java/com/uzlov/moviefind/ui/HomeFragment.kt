@@ -22,14 +22,25 @@ class FirstFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        // code
-        // code
-        // code
-        // code
-        // code
-        // code
-        // code
-        // code
-        // code
+
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode)
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
+//        code
     }
 }
