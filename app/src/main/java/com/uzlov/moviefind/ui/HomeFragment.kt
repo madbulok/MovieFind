@@ -22,14 +22,6 @@ class FirstFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        // code
-        // code
-        // code
-        // code
-        // code
-        // code
-        // code
-        // code
-        // code
+
     }
 }
