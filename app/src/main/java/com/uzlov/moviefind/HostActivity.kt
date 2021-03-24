@@ -3,19 +3,61 @@ package com.uzlov.moviefind
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.uzlov.moviefind.databinding.ActivityMainBinding
 import com.uzlov.moviefind.fragments.HomeFragment
+import com.uzlov.moviefind.fragments.PopularFilmsFragment
 
-class MainActivity : AppCompatActivity() {
+class HostActivity : AppCompatActivity() {
+
+    private val popularFilmsFragment = PopularFilmsFragment()
+    private val homeFragment = HomeFragment()
+    private var activeFragment = Fragment()
+
+
+    private var _viewBinding: ActivityMainBinding ?= null
+    private val viewBinding get() = _viewBinding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        _viewBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragment_container, HomeFragment.newInstance())
-            .commit()
+        initFragments()
+
+        viewBinding.bottomNavigation.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.menu_home -> {
+                    setActiveFragment(homeFragment)
+                    true
+                }
+                R.id.menu_favorite-> {
+                    setActiveFragment(popularFilmsFragment)
+                    true
+                }
+                R.id.menu_settings -> {
+                    Toast.makeText(this, getString(R.string.in_developing), Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun initFragments(){
+        supportFragmentManager.beginTransaction().apply {
+            add(R.id.fragment_container, homeFragment, "homeFragment").hide(homeFragment)
+            add(R.id.fragment_container, popularFilmsFragment, "popularFilmsFragment").hide(popularFilmsFragment)
+        }.commit()
+
+        setActiveFragment(homeFragment)
+    }
+
+    private fun setActiveFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction().hide(activeFragment).show(fragment).commit()
+        activeFragment = fragment
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -28,5 +70,10 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 }
