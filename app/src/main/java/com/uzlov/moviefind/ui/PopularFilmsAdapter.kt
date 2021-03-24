@@ -6,23 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.uzlov.moviefind.R
+import com.uzlov.moviefind.databinding.ItemFilmBinding
+import com.uzlov.moviefind.databinding.PopularFilmsFragmentBinding
 import com.uzlov.moviefind.model.Result
+import com.uzlov.moviefind.model.TestFilm
 
 class PopularFilmsAdapter : RecyclerView.Adapter<PopularFilmsHolder>() {
-    private val mListFilms:MutableList<Result> = mutableListOf()
+    private val mListFilms:MutableList<TestFilm> = mutableListOf()
 
 
-    fun addFilm(film : Result ){
+    fun addFilm(film : TestFilm ){
         mListFilms.add(film)
         notifyItemInserted(mListFilms.size)
     }
 
-    fun addFilms(film :  List<Result>){
-        mListFilms.addAll(film)
-        notifyItemRangeInserted(mListFilms.size-film.size, mListFilms.size)
-    }
-
-    fun setFilms(films : List<Result>){
+    fun setTestFilms(films : List<TestFilm>){
         mListFilms.apply {
             clear()
             addAll(films)
@@ -32,8 +30,8 @@ class PopularFilmsAdapter : RecyclerView.Adapter<PopularFilmsHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularFilmsHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_film, parent, false)
-        return PopularFilmsHolder(view)
+        val binding = ItemFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PopularFilmsHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PopularFilmsHolder, position: Int) {
@@ -44,10 +42,9 @@ class PopularFilmsAdapter : RecyclerView.Adapter<PopularFilmsHolder>() {
 
 }
 
-class PopularFilmsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    fun onBind(film : Result){
-
+class PopularFilmsHolder(private val binding: ItemFilmBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun onBind(film : TestFilm){
+        binding.nameFilmTV.text = film.name
+        binding.genreFilmTV.text = film.genre
     }
-
 }

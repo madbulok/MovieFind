@@ -8,6 +8,7 @@ import java.lang.Thread.sleep
 
 class FilmsViewModel(private val liveDataToObserve: MutableLiveData<List<TestFilm>> = MutableLiveData()) : ViewModel() {
 
+
     fun getPopularFilms() : LiveData<List<TestFilm>>{
         getLocalData()
         return liveDataToObserve
