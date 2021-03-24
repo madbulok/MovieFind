@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.uzlov.moviefind.databinding.PopularFilmsFragmentBinding
 import com.uzlov.moviefind.model.TestFilm
 import com.uzlov.moviefind.ui.PopularFilmsAdapter
@@ -40,6 +42,7 @@ class PopularFilmsFragment : Fragment() {
         viewBinding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = popularFilmsAdapter
+            addItemDecoration(DividerItemDecoration(requireContext(), RecyclerView.VERTICAL))
         }
     }
 
