@@ -1,7 +1,6 @@
 package com.uzlov.moviefind.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,17 +9,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.PopularFilmsFragmentBinding
 import com.uzlov.moviefind.model.TestFilm
+import com.uzlov.moviefind.ui.MyItemDecorator
 import com.uzlov.moviefind.ui.PopularFilmsAdapter
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
 
-class PopularFilmsFragment : Fragment() {
+class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
 
     private lateinit var viewModel: FilmsViewModel
     private var _viewBinding: PopularFilmsFragmentBinding?=null
     private val viewBinding get() = _viewBinding!!
-
+    private val films:ArrayList<TestFilm> = ArrayList()
     private lateinit var popularFilmsAdapter : PopularFilmsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,10 +31,14 @@ class PopularFilmsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        popularFilmsAdapter = PopularFilmsAdapter()
+        popularFilmsAdapter = PopularFilmsAdapter(this)
         viewModel = ViewModelProvider(this).get(FilmsViewModel::class.java)
         viewModel.getPopularFilms().observe(viewLifecycleOwner, {
             showLoadedFilms(it)
+            films.apply {
+                clear()
+                addAll(it)
+            }
         })
     }
 
@@ -42,12 +47,25 @@ class PopularFilmsFragment : Fragment() {
         viewBinding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = popularFilmsAdapter
-            addItemDecoration(DividerItemDecoration(requireContext(), RecyclerView.VERTICAL))
+            addItemDecoration(MyItemDecorator(RecyclerView.VERTICAL))
         }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         _viewBinding = null
+        super.onDestroy()
     }
+
+    override fun onClick(position: Int) {
+        parentFragmentManager.beginTransaction()
+            .hide(this)
+            .replace(R.id.fragment_container, FilmFragment.newInstance(films[position]))
+            .addToBackStack(null)
+            .commit()
+    }
+
+
+}
+interface OnClickListenerAdapter{
+    fun onClick(position: Int)
 }
