@@ -1,26 +1,23 @@
 package com.uzlov.moviefind.ui
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.ItemFilmBinding
-import com.uzlov.moviefind.databinding.PopularFilmsFragmentBinding
-import com.uzlov.moviefind.model.Result
+import com.uzlov.moviefind.fragments.OnClickListenerAdapter
 import com.uzlov.moviefind.model.TestFilm
 
-class PopularFilmsAdapter : RecyclerView.Adapter<PopularFilmsHolder>() {
-    private val mListFilms:MutableList<TestFilm> = mutableListOf()
+class PopularFilmsAdapter(var listenerClick: OnClickListenerAdapter) :
+    RecyclerView.Adapter<PopularFilmsAdapter.PopularFilmsHolder>() {
+    private val mListFilms: MutableList<TestFilm> = mutableListOf()
 
 
-    fun addFilm(film : TestFilm ){
+    fun addFilm(film: TestFilm) {
         mListFilms.add(film)
         notifyItemInserted(mListFilms.size)
     }
 
-    fun setTestFilms(films : List<TestFilm>){
+    fun setTestFilms(films: List<TestFilm>) {
         mListFilms.apply {
             clear()
             addAll(films)
@@ -38,13 +35,20 @@ class PopularFilmsAdapter : RecyclerView.Adapter<PopularFilmsHolder>() {
         holder.onBind(mListFilms[position])
     }
 
-    override fun getItemCount(): Int  = mListFilms.size
+    override fun getItemCount(): Int = mListFilms.size
 
-}
-
-class PopularFilmsHolder(private val binding: ItemFilmBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun onBind(film : TestFilm){
-        binding.nameFilmTV.text = film.name
-        binding.genreFilmTV.text = film.genre
+    inner class PopularFilmsHolder(private val binding: ItemFilmBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun onBind(film: TestFilm) {
+            binding.apply {
+                nameFilmTV.text = film.name
+                genreFilmTVLabel.text = film.genre
+                root.setOnClickListener {
+                    listenerClick.onClick(adapterPosition)
+                }
+            }
+        }
     }
 }
+
+
