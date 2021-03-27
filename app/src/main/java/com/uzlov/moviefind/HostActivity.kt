@@ -40,8 +40,7 @@ class HostActivity : AppCompatActivity() {
                 }
                 R.id.menu_settings -> {
                     Toast.makeText(this, getString(R.string.in_developing), Toast.LENGTH_SHORT).show()
-                    setActiveFragment(filmsFragmentL)
-                    true
+                    false
                 }
                 else -> false
             }
@@ -58,7 +57,8 @@ class HostActivity : AppCompatActivity() {
         setActiveFragment(homeFragment)
     }
 
-    private fun setActiveFragment(fragment: Fragment){
+    private fun setActiveFragment(fragment: Fragment) {
+        if(supportFragmentManager.backStackEntryCount > 0) supportFragmentManager.popBackStack()
         supportFragmentManager.beginTransaction().hide(activeFragment).show(fragment).commit()
         activeFragment = fragment
     }
