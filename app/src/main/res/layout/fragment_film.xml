@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/image"
+    tools:viewBindingIgnore="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/BottomCornerRaduis"
+            app:srcCompat="@drawable/ter" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_favorite_border_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="32dp"
+            android:background="@color/transparent"
+            app:iconGravity="textEnd"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_arrow_back_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_margin="32dp"
+            android:background="@color/transparent"
+            app:iconGravity="textStart" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32sp"
+            android:text="Terminator"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/watchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Смотреть"
+            android:textAllCaps="false"
+            app:cornerRadius="32dp"
+            app:layout_constraintLeft_toLeftOf="@+id/titleTv"
+            app:layout_constraintTop_toBottomOf="@+id/titleTv" />
+
+        <RatingBar
+            android:id="@+id/ratingFilm"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:progressTint="@color/purple_500"
+            android:rating="4.5"
+            app:layout_constraintBottom_toBottomOf="@+id/watchButton"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/watchButton" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/descriptionTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:lineSpacingExtra="6dp"
+            android:text="@string/description_text"
+            android:textIsSelectable="true"
+            app:layout_constraintLeft_toLeftOf="@id/watchButton"
+            app:layout_constraintRight_toRightOf="@id/ratingFilm"
+            app:layout_constraintTop_toBottomOf="@id/watchButton" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewActor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/descriptionTV"/>
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/studioFilmTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/studio_title"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/watchButton"
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewActor" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/genreFilmTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/genreTV"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/watchButton"
+            app:layout_constraintTop_toBottomOf="@id/studioFilmTV" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/yearFilmTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/year"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@id/watchButton"
+            app:layout_constraintTop_toBottomOf="@id/genreFilmTV"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
+

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.uzlov.moviefind.databinding.ActivityMainBinding
+import com.uzlov.moviefind.fragments.FilmFragment
 import com.uzlov.moviefind.fragments.HomeFragment
 import com.uzlov.moviefind.fragments.PopularFilmsFragment
 
@@ -15,7 +16,7 @@ class HostActivity : AppCompatActivity() {
     private val popularFilmsFragment = PopularFilmsFragment()
     private val homeFragment = HomeFragment()
     private var activeFragment = Fragment()
-
+    private var filmsFragmentL = FilmFragment()
 
     private var _viewBinding: ActivityMainBinding ?= null
     private val viewBinding get() = _viewBinding!!
@@ -39,6 +40,7 @@ class HostActivity : AppCompatActivity() {
                 }
                 R.id.menu_settings -> {
                     Toast.makeText(this, getString(R.string.in_developing), Toast.LENGTH_SHORT).show()
+                    setActiveFragment(filmsFragmentL)
                     true
                 }
                 else -> false
@@ -50,6 +52,7 @@ class HostActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, homeFragment, "homeFragment").hide(homeFragment)
             add(R.id.fragment_container, popularFilmsFragment, "popularFilmsFragment").hide(popularFilmsFragment)
+            add(R.id.fragment_container, filmsFragmentL, "filmsFragmentL").hide(filmsFragmentL)
         }.commit()
 
         setActiveFragment(homeFragment)
