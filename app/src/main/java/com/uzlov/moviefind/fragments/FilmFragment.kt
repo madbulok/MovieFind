@@ -4,26 +4,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uzlov.moviefind.databinding.FragmentFilmBinding
 import com.uzlov.moviefind.model.TestFilm
 import com.uzlov.moviefind.ui.ActorFilmsAdapter
-import com.uzlov.moviefind.ui.ActorHorizontalItemDecorator
+import com.uzlov.moviefind.ui.MyItemDecorator
 
 class FilmFragment : Fragment() {
+
     private var _viewBinding: FragmentFilmBinding?=null
     private val viewBinding get() = _viewBinding!!
+    private lateinit var film : TestFilm
 
     companion object {
-        fun newInstance(testFilm : TestFilm){
-            val fragment = FilmFragment()
-            val bundle = Bundle().apply {
+        fun newInstance(testFilm: TestFilm): FilmFragment {
+            val data = Bundle().apply {
                 putParcelable("film_key", testFilm)
             }
+            return FilmFragment().apply { arguments = data }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        film = arguments?.getParcelable("film_key") ?: TestFilm()
     }
 
     override fun onCreateView(
@@ -38,10 +44,31 @@ class FilmFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val actorAdapter = ActorFilmsAdapter()
-        viewBinding.recyclerViewActor.apply {
-            adapter = actorAdapter
-            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-            addItemDecoration(ActorHorizontalItemDecorator())
+        viewBinding.apply {
+
+            titleTv.text = film.name
+            ratingFilm.rating = film.rating.toFloat()
+            descriptionTV.text = film.description
+            genreFilmTv.text = film.genre
+            studioFilm.text = film.studio
+            yearFilmTv.text = film.year
+
+            recyclerViewActor.apply {
+                adapter = actorAdapter
+                layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                addItemDecoration(MyItemDecorator(), RecyclerView.HORIZONTAL)
+            }
+
+            backButton.setOnClickListener {
+                parentFragmentManager.popBackStack()
+            }
         }
+
+    }
+
+
+    override fun onDestroy() {
+        _viewBinding = null
+        super.onDestroy()
     }
 }

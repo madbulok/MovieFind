@@ -2,4 +2,12 @@
 <resources>
     <string name="okay">Круто!</string>
     <string name="thankyou">Спасибо</string>
+    <string name="settings">Настройки</string>
+    <string name="favorite">Любимые</string>
+    <string name="home">Главная</string>
+    <string name="in_developing">В разработке</string>
+    <string name="description_text">История противостояния солдата Кайла Риза и киборга-терминатора, прибывших в 1984-й год из пост-апокалиптического будущего, где миром правят машины-убийцы, а человечество находится на грани вымирания. Цель киборга: убить девушку по имени Сара Коннор, чей ещё нерождённый сын к 2029 году выиграет войну человечества с машинами. Цель Риза: спасти Сару и остановить Терминатора любой ценой.</string>
+    <string name="genreTV">Жанр</string>
+    <string name="studio_title">Студия</string>
+    <string name="watch_label">Смотреть</string>
 </resources>

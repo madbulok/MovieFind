@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="height_image_film">400dp</dimen>
+    <dimen name="margin_container">32sp</dimen>
+    <dimen name="margin_child">16dp</dimen>
+</resources>

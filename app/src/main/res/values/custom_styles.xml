@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BottomCornerRaduis">
+        <item name="cornerSizeBottomLeft">32dp</item>
+        <item name="cornerSizeBottomRight">32dp</item>
+    </style>
+
+    <style name="CornerRaduis">
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>
