@@ -3,12 +3,12 @@ package com.uzlov.moviefind.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class TestFilm(val name:String = "", val genre:String = "", val rating: Int = 0,
+data class TestFilm(val name:String = "", val genre:String = "", val rating: Double = 0.0,
                     val description: String = "", val studio: String = "", val year: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString()  ?: "",
-        parcel.readInt(),
+        parcel.readDouble(),
         parcel.readString()  ?: "",
         parcel.readString()  ?: "",
         parcel.readString() ?: ""
@@ -18,7 +18,7 @@ data class TestFilm(val name:String = "", val genre:String = "", val rating: Int
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeString(genre)
-        parcel.writeInt(rating)
+        parcel.writeDouble(rating)
         parcel.writeString(description)
         parcel.writeString(studio)
         parcel.writeString(year)
