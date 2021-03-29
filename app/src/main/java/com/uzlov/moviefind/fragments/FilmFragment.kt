@@ -13,7 +13,6 @@ import com.uzlov.moviefind.ui.ActorFilmsAdapter
 import com.uzlov.moviefind.ui.MyItemDecorator
 
 class FilmFragment : Fragment() {
-
     private var _viewBinding: FragmentFilmBinding?=null
     private val viewBinding get() = _viewBinding!!
     private lateinit var film : TestFilm
@@ -56,16 +55,14 @@ class FilmFragment : Fragment() {
             recyclerViewActor.apply {
                 adapter = actorAdapter
                 layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                addItemDecoration(MyItemDecorator(), RecyclerView.HORIZONTAL)
+                addItemDecoration(MyItemDecorator(1), RecyclerView.HORIZONTAL)
             }
 
             backButton.setOnClickListener {
                 parentFragmentManager.popBackStack()
             }
         }
-
     }
-
 
     override fun onDestroy() {
         _viewBinding = null

@@ -8,4 +8,10 @@
     <style name="CornerRaduis">
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="CornerRaduisTop">
+        <item name="cornerSizeTopLeft">32dp</item>
+        <item name="cornerSizeTopRight">32dp</item>
+    </style>
+
 </resources>

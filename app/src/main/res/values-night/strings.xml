@@ -10,4 +10,6 @@
     <string name="genreTV">Жанр</string>
     <string name="studio_title">Студия</string>
     <string name="watch_label">Смотреть</string>
+    <string name="what_watch_today_label">Что будем смотреть сегодня?</string>
+    <string name="input_name_film">Введите название</string>
 </resources>

@@ -6,4 +6,5 @@
     <dimen name="size_button_toolbar">40dp</dimen>
     <dimen name="margin_container">32sp</dimen>
     <dimen name="margin_child">16dp</dimen>
+    <dimen name="corner_radius_search_et">32dp</dimen>
 </resources>
