@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uzlov.moviefind.R
@@ -51,17 +50,18 @@ class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
+        super.onDestroyView()
         _viewBinding = null
-        super.onDestroy()
     }
 
     override fun onClick(position: Int) {
-        parentFragmentManager.beginTransaction()
-            .hide(this)
-            .replace(R.id.fragment_container, FilmFragment.newInstance(films[position]))
-            .addToBackStack(null)
-            .commit()
+        parentFragmentManager.beginTransaction().run {
+            hide(this@PopularFilmsFragment)
+            replace(R.id.fragment_container, FilmFragment.newInstance(films[position]))
+            addToBackStack(null)
+            commit()
+        }
     }
 
 

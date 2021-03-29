@@ -18,7 +18,7 @@ class PopularFilmsAdapter(var listenerClick: OnClickListenerAdapter) :
     }
 
     fun setTestFilms(films: List<TestFilm>) {
-        mListFilms.apply {
+        mListFilms.run {
             clear()
             addAll(films)
         }
@@ -40,7 +40,7 @@ class PopularFilmsAdapter(var listenerClick: OnClickListenerAdapter) :
     inner class PopularFilmsHolder(private val binding: ItemFilmBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(film: TestFilm) {
-            binding.apply {
+            with(binding) {
                 nameFilmTV.text = film.name
                 genreFilmTVLabel.text = film.genre
                 root.setOnClickListener {

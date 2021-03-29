@@ -42,9 +42,7 @@ class FilmFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val actorAdapter = ActorFilmsAdapter()
-        viewBinding.apply {
-
+        with(viewBinding) {
             titleTv.text = film.name
             ratingFilm.rating = film.rating.toFloat()
             descriptionTV.text = film.description
@@ -53,7 +51,7 @@ class FilmFragment : Fragment() {
             yearFilmTv.text = film.year
 
             recyclerViewActor.apply {
-                adapter = actorAdapter
+                adapter = ActorFilmsAdapter()
                 layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
                 addItemDecoration(MyItemDecorator(1), RecyclerView.HORIZONTAL)
             }
@@ -64,8 +62,8 @@ class FilmFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
+        super.onDestroyView()
         _viewBinding = null
-        super.onDestroy()
     }
 }
