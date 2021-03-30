@@ -17,7 +17,10 @@ import com.uzlov.moviefind.viewmodels.FilmsViewModel
 
 class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
 
-    private lateinit var viewModel: FilmsViewModel
+    private val viewModel: FilmsViewModel by lazy {
+        ViewModelProvider(this).get(FilmsViewModel::class.java)
+    }
+
     private var _viewBinding: PopularFilmsFragmentBinding?=null
     private val viewBinding get() = _viewBinding!!
     private val films:ArrayList<TestFilm> = ArrayList()
@@ -31,7 +34,6 @@ class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         popularFilmsAdapter = PopularFilmsAdapter(this)
-        viewModel = ViewModelProvider(this).get(FilmsViewModel::class.java)
         viewModel.getPopularFilms().observe(viewLifecycleOwner, {
             showLoadedFilms(it)
             films.apply {
