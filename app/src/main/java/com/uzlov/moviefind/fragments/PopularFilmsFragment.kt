@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.PopularFilmsFragmentBinding
 import com.uzlov.moviefind.model.TestFilm
@@ -45,15 +46,28 @@ class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
 
         val repo = RepositoryPopularImpl.loadPopular {
             // stub
+
         }
     }
-
+    private fun View.showSnackBar(
+        text : String,
+        actionText: String,
+        action: (View) -> Unit,
+        length: Int = Snackbar.LENGTH_INDEFINITE
+    ) {
+        Snackbar.make(this, text, length).setAction(actionText, action).show()
+    }
     private fun showLoadedFilms(list: List<TestFilm>) {
         popularFilmsAdapter.setTestFilms(list)
         viewBinding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = popularFilmsAdapter
             addItemDecoration(MyItemDecorator(RecyclerView.VERTICAL))
+            showSnackBar(text = getString(R.string.text_success_loaded),
+                actionText = getString(R.string.text_ok),
+                action = {
+                // stub
+            })
         }
     }
 
@@ -65,7 +79,7 @@ class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
     override fun onClick(position: Int) {
         parentFragmentManager.beginTransaction().run {
             hide(this@PopularFilmsFragment)
-            replace(R.id.fragment_container, FilmFragment.newInstance(films[position]))
+            add(R.id.fragment_container, FilmFragment.newInstance(films[position]))
             addToBackStack(null)
             commit()
         }

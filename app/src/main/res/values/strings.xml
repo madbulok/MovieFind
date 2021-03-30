@@ -107,4 +107,6 @@
     <string name="watch_label">Смотреть</string>
     <string name="what_watch_today_label">Что будем смотреть сегодня?</string>
     <string name="input_name_film">Введите название</string>
+    <string name="text_success_loaded">Загружено!</string>
+    <string name="text_ok">Ок</string>
 </resources>
