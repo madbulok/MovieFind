@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.PopularFilmsFragmentBinding
 import com.uzlov.moviefind.model.TestFilm
+import com.uzlov.moviefind.repository.RepositoryPopularImpl
 import com.uzlov.moviefind.ui.MyItemDecorator
 import com.uzlov.moviefind.ui.PopularFilmsAdapter
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
@@ -41,6 +42,10 @@ class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
                 addAll(it)
             }
         })
+
+        val repo = RepositoryPopularImpl.loadPopular {
+            // stub
+        }
     }
 
     private fun showLoadedFilms(list: List<TestFilm>) {
