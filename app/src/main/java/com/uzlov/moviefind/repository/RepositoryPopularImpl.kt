@@ -5,7 +5,7 @@ import com.uzlov.moviefind.model.PopularFilms
 
 object RepositoryPopularImpl : Loadable<PopularFilms> {
 
-    override fun loadPopular(results: List<PopularFilms>) {
+    override fun loadPopular(films: (List<PopularFilms>) -> Unit) {
 
     }
 }
