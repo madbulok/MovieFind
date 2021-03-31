@@ -57,12 +57,6 @@
         app:layout_constraintTop_toBottomOf="@id/textInputLayout"
         android:layout_marginTop="@dimen/margin_container"
         app:shapeAppearanceOverlay="@style/CornerRaduisTop">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerFilmView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
     </com.google.android.material.card.MaterialCardView>
 
 

@@ -9,6 +9,10 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="CornerRaduis10">
+        <item name="cornerSize">10%</item>
+    </style>
+
     <style name="CornerRaduisTop">
         <item name="cornerSizeTopLeft">32dp</item>
         <item name="cornerSizeTopRight">32dp</item>
