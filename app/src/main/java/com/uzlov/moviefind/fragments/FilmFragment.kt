@@ -31,6 +31,7 @@ class FilmFragment : Fragment() {
         film = arguments?.getParcelable("film_key") ?: TestFilm()
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,6 +50,7 @@ class FilmFragment : Fragment() {
             genreFilmTv.text = film.genre
             studioFilm.text = film.studio
             yearFilmTv.text = film.year
+
 
             recyclerViewActor.apply {
                 adapter = ActorFilmsAdapter()

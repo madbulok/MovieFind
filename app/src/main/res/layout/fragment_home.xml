@@ -58,7 +58,4 @@
         android:layout_marginTop="@dimen/margin_container"
         app:shapeAppearanceOverlay="@style/CornerRaduisTop">
     </com.google.android.material.card.MaterialCardView>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
