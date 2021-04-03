@@ -3,43 +3,28 @@ package com.uzlov.moviefind.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.uzlov.moviefind.model.TestFilm
-import java.lang.Thread.sleep
+import com.uzlov.moviefind.model.Film
+import com.uzlov.moviefind.model.PopularFilms
 
-class FilmsViewModel(private val liveDataToObserve: MutableLiveData<List<TestFilm>> = MutableLiveData()) : ViewModel() {
+import com.uzlov.moviefind.repository.RepositoryPopularImpl
 
+class FilmsViewModel : ViewModel() {
+    private var liveDataToObserve: MutableLiveData<PopularFilms> = MutableLiveData()
 
-    fun getPopularFilms() : LiveData<List<TestFilm>>{
+    fun getPopularFilms() : LiveData<PopularFilms>{
         getLocalDataFilms()
         return liveDataToObserve
     }
 
+    fun getFilmById(id: Int) : LiveData<Film> {
+        return RepositoryPopularImpl.loadFilmById(id)
+    }
+
     private fun getLocalDataFilms(){
-        Thread {
-            sleep(1000)
-            liveDataToObserve.postValue(listOf(
-                    TestFilm("Бойцовский клуб","Боевик", 4.9,
-                        "Тон фильму задают начальные кадры: показано неистовое движение нервного импульса (который можно трактовать как боль, страх или мысль) по лабиринту нервных волокон в мозговой ткани Рассказчика[3]. Уже в этих кадрах содержится намёк на суть показанного далее.",
-                        "20 Century Fox",
-                    "1999"),
-                    TestFilm("Пила 2","Ужасы",3.5,
-                        "Майкл приходит в себя в комнате, на голове у него раскрытая маска с шипами внутри («Маска смерти»). Включается телевизор, на экране появляется кукла Билли и она говорит Майклу, что тот — доносчик и стукач. Маска захлопнется и убьёт его, если он за минуту не успеет отыскать ключ, зашитый в его правую глазницу, скальпель прилагается. Сделав несколько попыток, Майкл понимает, что не сможет выколоть свой глаз, и маска, захлопнувшись, убивает его.",
-                        "Lionsgate Films",
-                        "2005"),
-                    TestFilm("Большой куш","Боевик, комедия", 4.1,
-                        "В Антверпене банда грабителей, переодетых в религиозных евреев, один из которых — Фрэнки «Четыре пальца» (Бенисио дель Торо), похищает из еврейской ювелирной конторы множество драгоценностей, среди которых бриллиант в 86 карат. Фрэнки предстоит доставить это сокровище в пристёгиваемом к руке бронированном дипломате с кодовой защитой прикрывающему эту банду ювелиру Ави Деновицу (Дэннис Фарина) в Нью-Йорк, транзитом через Лондон. ",
-                        "Columbia Pictures",
-                        "2000"),
-                    TestFilm("1+1","Комедия, драма", 4.3,
-                        "Парализованный богатый аристократ Филипп, ставший инвалидом после того, как разбился на параплане, ищет себе помощника, который должен за ним ухаживать. Одного из кандидатов, чернокожего Дрисса, работа не интересует — ему нужен формальный письменный отказ, чтобы продолжать получать пособие по безработице. Но неожиданно именно его Филипп берёт на работу.",
-                        "Gaumont",
-                        "2011"
-                    ),
-                    TestFilm("Терминатор","Боевик", 4.5,
-                        "История противостояния солдата Кайла Риза и киборга-терминатора, прибывших в 1984-й год из пост-апокалиптического будущего, где миром правят машины-убийцы, а человечество находится на грани вымирания. Цель киборга: убить девушку по имени Сара Коннор, чей ещё нерождённый сын к 2029 году выиграет войну человечества с машинами. Цель Риза: спасти Сару и остановить Терминатора любой ценой.",
-                        "Warner",
-                        "1984"))
-            )
-        }.start()
+        liveDataToObserve = RepositoryPopularImpl.loadPopular()
+    }
+
+    fun getTopRatedFilms() : LiveData<PopularFilms> {
+        return RepositoryPopularImpl.loadTopRatedFilms()
     }
 }

@@ -22,8 +22,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/BottomCornerRaduis"
-            app:srcCompat="@drawable/ter" />
+            app:shapeAppearanceOverlay="@style/BottomCornerRaduis" />
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="@dimen/size_button_toolbar"

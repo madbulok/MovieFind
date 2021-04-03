@@ -15,4 +15,11 @@ data class Result(
     val video: Boolean,
     val vote_average: Double,
     val vote_count: Int
-)
+) {
+    fun getImage50() : String {
+        return "https://image.tmdb.org/t/p/w500$poster_path"
+    }
+    fun getImageOriginal() : String {
+        return "https://image.tmdb.org/t/p/original$poster_path"
+    }
+}
