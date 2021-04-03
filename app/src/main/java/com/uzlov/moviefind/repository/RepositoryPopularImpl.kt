@@ -80,6 +80,41 @@ object RepositoryPopularImpl : Loadable {
         return responseLiveData
     }
 
+
+    override fun loadTopRatedFilms(): MutableLiveData<PopularFilms> {
+        val uriDetailFilm = URL("https://api.themoviedb.org/3/movie/top_rated?api_key=${Constants.API_KEY}&language=ru-RU")
+        val responseLiveData: MutableLiveData<PopularFilms> = MutableLiveData()
+
+        try {
+            Thread {
+                lateinit var urlConnection: HttpsURLConnection
+                try {
+                    urlConnection = (uriDetailFilm.openConnection() as HttpsURLConnection).apply {
+                        requestMethod = "GET"
+                        readTimeout = 10_000
+                    }
+                    val bufferedReader =
+                        BufferedReader(InputStreamReader(urlConnection.inputStream))
+
+                    val film =
+                        Gson().fromJson(bufferedReader.getLines(), PopularFilms::class.java)
+                    responseLiveData.postValue(film)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    urlConnection.disconnect()
+                }
+            }.start()
+        } catch (e: MalformedURLException){
+            e.printStackTrace()
+        }
+        return responseLiveData
+    }
+
+
+
+
     private fun BufferedReader.getLines() : String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             lines().collect(Collectors.joining("\n"))

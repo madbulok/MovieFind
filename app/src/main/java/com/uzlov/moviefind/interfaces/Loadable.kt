@@ -8,4 +8,5 @@ import com.uzlov.moviefind.model.PopularFilms
 public interface Loadable {
     fun loadPopular() : MutableLiveData<PopularFilms>
     fun loadFilmById(id: Int) : MutableLiveData<Film>
+    fun loadTopRatedFilms(): MutableLiveData<PopularFilms>
 }
