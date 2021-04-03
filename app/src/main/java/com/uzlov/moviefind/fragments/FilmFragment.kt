@@ -5,22 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uzlov.moviefind.databinding.FragmentFilmBinding
-import com.uzlov.moviefind.model.TestFilm
 import com.uzlov.moviefind.ui.ActorFilmsAdapter
 import com.uzlov.moviefind.ui.MyItemDecorator
+import com.uzlov.moviefind.viewmodels.FilmsViewModel
 
 class FilmFragment : Fragment() {
     private var _viewBinding: FragmentFilmBinding?=null
     private val viewBinding get() = _viewBinding!!
-    private lateinit var film : TestFilm
+    private val viewModel: FilmsViewModel by lazy {
+        ViewModelProvider(this).get(FilmsViewModel::class.java)
+    }
+    private var id_film  = 0
 
     companion object {
-        fun newInstance(testFilm: TestFilm): FilmFragment {
+        fun newInstance(id: Int): FilmFragment {
             val data = Bundle().apply {
-                putParcelable("film_key", testFilm)
+                putInt("film_key", id)
             }
             return FilmFragment().apply { arguments = data }
         }
@@ -28,7 +32,7 @@ class FilmFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        film = arguments?.getParcelable("film_key") ?: TestFilm()
+        id_film = arguments?.getInt("film_key") ?: 0
     }
 
 
@@ -43,25 +47,27 @@ class FilmFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(viewBinding) {
-            titleTv.text = film.name
-            ratingFilm.rating = film.rating.toFloat()
-            descriptionTV.text = film.description
-            genreFilmTv.text = film.genre
-            studioFilm.text = film.studio
-            yearFilmTv.text = film.year
 
+        viewModel.getFilmById(id_film).observe(viewLifecycleOwner, {
+            with(viewBinding) {
+                titleTv.text = it.title
+                ratingFilm.rating = it.vote_average.div(2).toFloat()
+                descriptionTV.text = it.overview
+                genreFilmTv.text = it.genres.joinToString(", ")
+                studioFilm.text = it.production_companies[0].name
+                yearFilmTv.text = it.release_date
 
-            recyclerViewActor.apply {
-                adapter = ActorFilmsAdapter()
-                layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                addItemDecoration(MyItemDecorator(1), RecyclerView.HORIZONTAL)
+                recyclerViewActor.apply {
+                    adapter = ActorFilmsAdapter()
+                    layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                    addItemDecoration(MyItemDecorator(1), RecyclerView.HORIZONTAL)
+                }
+
+                backButton.setOnClickListener {
+                    parentFragmentManager.popBackStack()
+                }
             }
-
-            backButton.setOnClickListener {
-                parentFragmentManager.popBackStack()
-            }
-        }
+        })
     }
 
     override fun onDestroyView() {
