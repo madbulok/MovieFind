@@ -1,134 +1,84 @@
 package com.uzlov.moviefind.repository
 
-import android.os.Build
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.uzlov.moviefind.interfaces.Constants
 import com.uzlov.moviefind.interfaces.Loadable
 import com.uzlov.moviefind.model.Film
 import com.uzlov.moviefind.model.PopularFilms
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.net.MalformedURLException
-import java.net.URL
-import java.util.stream.Collectors
-import javax.net.ssl.HttpsURLConnection
-
+import com.uzlov.moviefind.viewmodels.AppStateFilms
+import com.uzlov.moviefind.viewmodels.AppStateFilm
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object RepositoryPopularImpl : Loadable {
 
-    override fun loadPopular() : MutableLiveData<PopularFilms>{
-        val uriPopularFilms = URL("https://api.themoviedb.org/3/movie/popular?api_key=${Constants.API_KEY}&language=ru-RU")
-        val responseLiveData: MutableLiveData<PopularFilms> = MutableLiveData()
+    private val filmsApi = Retrofit
+        .Builder()
+        .baseUrl(Constants.API_URL)
+        .addConverterFactory(GsonConverterFactory.create(
+            GsonBuilder().setLenient().create()
+        )
+        )
+        .build().create(FilmApi::class.java)
 
+    override fun loadPopular() : MutableLiveData<AppStateFilms> {
+        val responseLiveData: MutableLiveData<AppStateFilms> = MutableLiveData()
 
-        try {
-            Thread {
-                lateinit var urlConnection: HttpsURLConnection
-                try {
-                    urlConnection = (uriPopularFilms.openConnection() as HttpsURLConnection).apply {
-                        requestMethod = "GET"
-                        readTimeout = 10_000
-                    }
-                    val bufferedReader =
-                        BufferedReader(InputStreamReader(urlConnection.inputStream))
-
-                    val popularFilms =
-                        Gson().fromJson(bufferedReader.getLines(), PopularFilms::class.java)
-                    responseLiveData.postValue(popularFilms)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    urlConnection.disconnect()
+        filmsApi.getPopularFilms().enqueue(object : Callback<PopularFilms> {
+            override fun onResponse(call: Call<PopularFilms>, response: Response<PopularFilms>) {
+                if (response.isSuccessful){
+                    responseLiveData.postValue(AppStateFilms.Success(filmsData = response.body()!!))
+                }else {
+                    responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${response.code()}"))
                 }
-            }.start()
-        } catch (e: MalformedURLException){
-            e.printStackTrace()
-        }
-        return responseLiveData
-    }
-
-    override fun loadFilmById(id: Int): MutableLiveData<Film> {
-        val uriDetailFilm = URL("https://api.themoviedb.org/3/movie/$id?api_key=${Constants.API_KEY}&language=ru-RU")
-        val responseLiveData: MutableLiveData<Film> = MutableLiveData()
-
-        try {
-            Thread {
-                lateinit var urlConnection: HttpsURLConnection
-                try {
-                    urlConnection = (uriDetailFilm.openConnection() as HttpsURLConnection).apply {
-                        requestMethod = "GET"
-                        readTimeout = 10_000
-                    }
-                    val bufferedReader =
-                        BufferedReader(InputStreamReader(urlConnection.inputStream))
-
-                    val film =
-                        Gson().fromJson(bufferedReader.getLines(), Film::class.java)
-                    responseLiveData.postValue(film)
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    urlConnection.disconnect()
-                }
-            }.start()
-        } catch (e: MalformedURLException){
-            e.printStackTrace()
-        }
-        return responseLiveData
-    }
-
-
-    override fun loadTopRatedFilms(): MutableLiveData<PopularFilms> {
-        val uriDetailFilm = URL("https://api.themoviedb.org/3/movie/top_rated?api_key=${Constants.API_KEY}&language=ru-RU")
-        val responseLiveData: MutableLiveData<PopularFilms> = MutableLiveData()
-
-        try {
-            Thread {
-                lateinit var urlConnection: HttpsURLConnection
-                try {
-                    urlConnection = (uriDetailFilm.openConnection() as HttpsURLConnection).apply {
-                        requestMethod = "GET"
-                        readTimeout = 10_000
-                    }
-                    val bufferedReader =
-                        BufferedReader(InputStreamReader(urlConnection.inputStream))
-
-                    val film =
-                        Gson().fromJson(bufferedReader.getLines(), PopularFilms::class.java)
-                    responseLiveData.postValue(film)
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    urlConnection.disconnect()
-                }
-            }.start()
-        } catch (e: MalformedURLException){
-            e.printStackTrace()
-        }
-        return responseLiveData
-    }
-
-
-
-
-    private fun BufferedReader.getLines() : String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            lines().collect(Collectors.joining("\n"))
-        } else {
-            val builder = StringBuilder()
-            try {
-                var line: String?
-                while (readLine().also { line = it } != null) {
-                    builder.append(line).append("\n")
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
             }
-            return builder.toString()
-        }
+
+            override fun onFailure(call: Call<PopularFilms>, t: Throwable) {
+                responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${t.message}"))
+            }
+        })
+        return responseLiveData
+    }
+
+    override fun loadFilmById(id: Int): MutableLiveData<AppStateFilm> {
+        val responseLiveData: MutableLiveData<AppStateFilm> = MutableLiveData()
+
+        filmsApi.getFilmById(id).enqueue(object : Callback<Film> {
+            override fun onResponse(call: Call<Film>, response: Response<Film>) {
+                if (response.isSuccessful){
+                    responseLiveData.postValue(AppStateFilm.Success(filmsData = response.body()!!))
+                } else {
+                    responseLiveData.value = AppStateFilm.Error(error = Throwable("Ошибка сервера ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<Film>, t: Throwable) {
+                responseLiveData.value = AppStateFilm.Error(error = Throwable("Ошибка сервера ${t.message}"))
+            }
+        })
+        return responseLiveData
+    }
+
+    override fun loadTopRatedFilms(): MutableLiveData<AppStateFilms> {
+        val responseLiveData: MutableLiveData<AppStateFilms> = MutableLiveData()
+
+        filmsApi.getTopFilms().enqueue(object : Callback<PopularFilms> {
+            override fun onResponse(call: Call<PopularFilms>, response: Response<PopularFilms>) {
+                if (response.isSuccessful){
+                    responseLiveData.postValue(AppStateFilms.Success(filmsData = response.body()!!))
+                } else {
+                    responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${response.code()}"))
+                }
+            }
+
+            override fun onFailure(call: Call<PopularFilms>, t: Throwable) {
+                responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${t.message}"))
+            }
+        })
+        return responseLiveData
     }
 }
