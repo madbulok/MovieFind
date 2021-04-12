@@ -3,20 +3,18 @@ package com.uzlov.moviefind.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.uzlov.moviefind.model.Film
-import com.uzlov.moviefind.model.PopularFilms
 
 import com.uzlov.moviefind.repository.RepositoryPopularImpl
 
 class FilmsViewModel : ViewModel() {
-    private var liveDataToObserve: MutableLiveData<PopularFilms> = MutableLiveData()
+    private var liveDataToObserve: MutableLiveData<AppStateFilms> = MutableLiveData()
 
-    fun getPopularFilms() : LiveData<PopularFilms>{
+    fun getPopularFilms() : LiveData<AppStateFilms>{
         getLocalDataFilms()
         return liveDataToObserve
     }
 
-    fun getFilmById(id: Int) : LiveData<Film> {
+    fun getFilmById(id: Int) : LiveData<AppStateFilm> {
         return RepositoryPopularImpl.loadFilmById(id)
     }
 
@@ -24,7 +22,7 @@ class FilmsViewModel : ViewModel() {
         liveDataToObserve = RepositoryPopularImpl.loadPopular()
     }
 
-    fun getTopRatedFilms() : LiveData<PopularFilms> {
+    fun getTopRatedFilms() : LiveData<AppStateFilms> {
         return RepositoryPopularImpl.loadTopRatedFilms()
     }
 }
