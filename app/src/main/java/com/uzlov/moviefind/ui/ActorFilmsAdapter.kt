@@ -2,8 +2,8 @@ package com.uzlov.moviefind.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.ItemActorBinding
 
@@ -29,13 +29,30 @@ class ActorFilmsAdapter : RecyclerView.Adapter<ActorFilmsHolder>() {
         holder.onBind(mListFilms[position])
     }
 
+    override fun onViewRecycled(holder: ActorFilmsHolder) {
+        super.onViewRecycled(holder)
+        holder.recycle()
+    }
+
     override fun getItemCount(): Int  = mListFilms.size
 
 }
 
 class ActorFilmsHolder(private val binding: ItemActorBinding) : RecyclerView.ViewHolder(binding.root) {
     fun onBind(actor : String){
-        binding.imageActor.background = ContextCompat.getDrawable(binding.root.context, R.drawable.actor)
-        binding.actorName.text = actor
+        with(binding){
+            Glide
+                .with(imageActor.context)
+                .load(R.drawable.ter)
+                .into(imageActor)
+            actorName.text = actor
+        }
+    }
+
+    fun recycle(){
+        Glide.get(binding.imageActor.context)
+            .requestManagerRetriever
+            .get(binding.imageActor.context)
+            .clear(binding.imageActor)
     }
 }

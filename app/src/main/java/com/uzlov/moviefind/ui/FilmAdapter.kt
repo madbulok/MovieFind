@@ -17,6 +17,11 @@ class FilmAdapter(private val onClick: IOnClickListenerAdapter) :
         mListFilms.addAll(films)
     }
 
+    override fun onViewRecycled(holder: FilmsHolder) {
+        super.onViewRecycled(holder)
+        holder.recycle()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmsHolder {
         val binding = ItemFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return FilmsHolder(binding)
@@ -33,7 +38,7 @@ class FilmAdapter(private val onClick: IOnClickListenerAdapter) :
         fun onBind(film: Result) {
             with(binding) {
                 Glide
-                    .with(root.context)
+                    .with(binding.imageFilm.context)
                     .load(film.getImage50())
                     .into(imageFilm)
                 titleFilmTV.text = film.title
@@ -42,6 +47,14 @@ class FilmAdapter(private val onClick: IOnClickListenerAdapter) :
                     onClick.onClick(adapterPosition, film.id)
                 }
             }
+        }
+
+        fun recycle() {
+            Glide
+                .get(binding.imageFilm.context)
+                .requestManagerRetriever
+                .get(binding.imageFilm.context)
+                .clear(binding.imageFilm)
         }
     }
 }
