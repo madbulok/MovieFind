@@ -8,9 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.uzlov.moviefind.databinding.FragmentFilmBinding
+import com.uzlov.moviefind.model.Film
 import com.uzlov.moviefind.ui.ActorFilmsAdapter
 import com.uzlov.moviefind.ui.MyItemDecorator
+import com.uzlov.moviefind.viewmodels.AppStateFilm
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
 
 class FilmFragment : Fragment() {
@@ -49,25 +53,53 @@ class FilmFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.getFilmById(id_film).observe(viewLifecycleOwner, {
-            with(viewBinding) {
-                titleTv.text = it.title
-                ratingFilm.rating = it.vote_average.div(2).toFloat()
-                descriptionTV.text = it.overview
-                genreFilmTv.text = it.genres.joinToString(", ")
-                studioFilm.text = it.production_companies[0].name
-                yearFilmTv.text = it.release_date
-
-                recyclerViewActor.apply {
-                    adapter = ActorFilmsAdapter()
-                    layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-                    addItemDecoration(MyItemDecorator(1), RecyclerView.HORIZONTAL)
-                }
-
-                backButton.setOnClickListener {
-                    parentFragmentManager.popBackStack()
-                }
-            }
+            renderData(it)
         })
+    }
+
+    private fun renderData(state: AppStateFilm){
+        when(state){
+            is AppStateFilm.Error -> showError(state.error)
+            AppStateFilm.Loading -> showLoading()
+            is AppStateFilm.Success -> showData(state.filmsData)
+        }
+    }
+
+    private fun showData(it: Film) {
+        with(viewBinding) {
+            titleTv.text = it.title
+            ratingFilm.rating = it.vote_average.div(2).toFloat()
+            descriptionTV.text = it.overview
+
+            studioFilm.text = it.production_companies[0].name
+            yearFilmTv.text = it.release_date
+
+            recyclerViewActor.apply {
+                adapter = ActorFilmsAdapter()
+                layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+                addItemDecoration(MyItemDecorator(1), RecyclerView.HORIZONTAL)
+            }
+
+            it.genres.map {
+                genreFilmTv.append("${it.name} \n")
+            }
+
+            Glide.with(image.context)
+                .load(it.getImageOriginal())
+                .into(image)
+
+            backButton.setOnClickListener {
+                parentFragmentManager.popBackStack()
+            }
+        }
+    }
+
+    private fun showLoading() {
+
+    }
+
+    private fun showError(error: Throwable) {
+        Snackbar.make(viewBinding.root, error.message ?: "Empty error", Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

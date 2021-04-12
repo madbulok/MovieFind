@@ -7,4 +7,5 @@
     <dimen name="margin_container">32sp</dimen>
     <dimen name="margin_child">16dp</dimen>
     <dimen name="corner_radius_search_et">32dp</dimen>
+    <dimen name="size_warning_picture">100dp</dimen>
 </resources>

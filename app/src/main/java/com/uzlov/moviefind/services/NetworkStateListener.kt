@@ -15,10 +15,13 @@ class NetworkStateListener(private val networkListener: NetworkListener) : Broad
     private val NETWORK_STATUS_WIFI = 1
     private val NETWORK_STATUS_MOBILE = 2
 
+
+
     override fun onReceive(context: Context, intent: Intent?) {
         connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         intent.let {
             if ("android.net.conn.CONNECTIVITY_CHANGE" == intent?.action){
+
                 when(getConnectionState()){
                     NETWORK_STATUS_NOT_CONNECTED-> networkListener.networkStateChanged(false)
                     else -> networkListener.networkStateChanged(true)

@@ -1,21 +1,28 @@
 package com.uzlov.moviefind.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 
 
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.FragmentHomeBinding
 import com.uzlov.moviefind.interfaces.IOnClickListenerAdapter
+import com.uzlov.moviefind.model.PopularFilms
 import com.uzlov.moviefind.ui.FilmAdapter
+import com.uzlov.moviefind.viewmodels.AppStateFilms
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
 
 class HomeFragment : Fragment() , IOnClickListenerAdapter{
+
+    private lateinit var adapterPopularFilms: FilmAdapter
+    private lateinit var adapterTopFilms: FilmAdapter
     private var _viewBinding: FragmentHomeBinding ?= null
     private val viewBinding get() = _viewBinding!!
     private val viewModel: FilmsViewModel by lazy {
@@ -32,27 +39,61 @@ class HomeFragment : Fragment() , IOnClickListenerAdapter{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adapterTopFilms = FilmAdapter(this)
+        adapterPopularFilms = FilmAdapter(this)
         loadData()
     }
 
-    private fun loadData(){
-        val adapterTopFilms = FilmAdapter(this)
+    fun loadData(){
         viewModel.getTopRatedFilms().observe(viewLifecycleOwner, {
-            adapterTopFilms.setFilms(it.results)
-            viewBinding.recommendRV.apply {
-                adapter = adapterTopFilms
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            }
+            renderDataTopFilms(it)
         })
 
-        val adapterPopularFilms = FilmAdapter(this)
         viewModel.getPopularFilms().observe(viewLifecycleOwner, {
-            viewBinding.popularRV.apply {
-                adapterPopularFilms.setFilms(it.results)
-                adapter = adapterPopularFilms
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            }
+            renderDataPopularFilms(it)
         })
+    }
+
+
+
+    private fun renderDataTopFilms(state: AppStateFilms){
+        when(state){
+            is AppStateFilms.Success -> showDataTopFilms(state.filmsData)
+            is AppStateFilms.Loading -> showLoading()
+            is AppStateFilms.Error -> showError(state.error)
+        }
+    }
+
+    private fun renderDataPopularFilms(state: AppStateFilms){
+        when(state){
+            is AppStateFilms.Success -> showDataPopularFilms(state.filmsData)
+            is AppStateFilms.Loading -> showLoading()
+            is AppStateFilms.Error -> showError(state.error)
+        }
+    }
+
+    private fun showDataPopularFilms(films: PopularFilms) {
+        viewBinding.popularRV.apply {
+            adapterPopularFilms.setFilms(films.results)
+            adapter = adapterPopularFilms
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
+    }
+
+    private fun showDataTopFilms(films: PopularFilms) {
+        adapterTopFilms.setFilms(films.results)
+        viewBinding.recommendRV.apply {
+            adapter = adapterTopFilms
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
+    }
+
+    private fun showLoading() {
+
+    }
+
+    private fun showError(error: Throwable) {
+        Snackbar.make(viewBinding.root, error.message ?: "Empty error", Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onClick(position: Int, id: Int) {
@@ -63,4 +104,10 @@ class HomeFragment : Fragment() , IOnClickListenerAdapter{
             commit()
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _viewBinding = null
+    }
 }
+
