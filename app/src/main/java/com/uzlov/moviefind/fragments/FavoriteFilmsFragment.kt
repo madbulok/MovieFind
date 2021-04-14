@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.uzlov.moviefind.R
+import com.uzlov.moviefind.database.FilmEntityDB
 import com.uzlov.moviefind.databinding.PopularFilmsFragmentBinding
-import com.uzlov.moviefind.model.TestFilm
-import com.uzlov.moviefind.repository.RepositoryPopularImpl
+import com.uzlov.moviefind.interfaces.IOnClickListenerAdapter
 import com.uzlov.moviefind.ui.MyItemDecorator
 import com.uzlov.moviefind.ui.PopularFilmsAdapter
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
 
-class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
+class FavoriteFilmsFragment : Fragment(), IOnClickListenerAdapter {
 
     private val viewModel: FilmsViewModel by lazy {
         ViewModelProvider(this).get(FilmsViewModel::class.java)
@@ -25,49 +25,26 @@ class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
 
     private var _viewBinding: PopularFilmsFragmentBinding?=null
     private val viewBinding get() = _viewBinding!!
-    private val films:ArrayList<TestFilm> = ArrayList()
-    private lateinit var popularFilmsAdapter : PopularFilmsAdapter
+    private var popularFilmsAdapter : PopularFilmsAdapter = PopularFilmsAdapter(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _viewBinding = PopularFilmsFragmentBinding.inflate(layoutInflater, container, false)
         return  viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        popularFilmsAdapter = PopularFilmsAdapter(this)
-        viewModel.getPopularFilms().observe(viewLifecycleOwner, {
+        viewModel.getMyFavoritesFilms().observe(viewLifecycleOwner, {
             showLoadedFilms(it)
-            films.apply {
-                clear()
-                addAll(it)
-            }
         })
-
-        val repo = RepositoryPopularImpl.loadPopular {
-            // stub
-
-        }
     }
-    private fun View.showSnackBar(
-        text : String,
-        actionText: String,
-        action: (View) -> Unit,
-        length: Int = Snackbar.LENGTH_INDEFINITE
-    ) {
-        Snackbar.make(this, text, length).setAction(actionText, action).show()
-    }
-    private fun showLoadedFilms(list: List<TestFilm>) {
-        popularFilmsAdapter.setTestFilms(list)
+
+    private fun showLoadedFilms(list: List<FilmEntityDB>) {
+        popularFilmsAdapter.setFilms(list)
         viewBinding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = popularFilmsAdapter
             addItemDecoration(MyItemDecorator(RecyclerView.VERTICAL))
-            showSnackBar(text = getString(R.string.text_success_loaded),
-                actionText = getString(R.string.text_ok),
-                action = {
-                // stub
-            })
         }
     }
 
@@ -76,17 +53,12 @@ class PopularFilmsFragment : Fragment(), OnClickListenerAdapter {
         _viewBinding = null
     }
 
-    override fun onClick(position: Int) {
+    override fun onClick(position: Int, id: Int) {
         parentFragmentManager.beginTransaction().run {
-            hide(this@PopularFilmsFragment)
-            add(R.id.fragment_container, FilmFragment.newInstance(films[position]))
+            hide(this@FavoriteFilmsFragment)
+            add(R.id.fragment_container, FilmFragment.newInstance(id))
             addToBackStack(null)
             commit()
         }
     }
-
-
-}
-interface OnClickListenerAdapter{
-    fun onClick(position: Int)
 }

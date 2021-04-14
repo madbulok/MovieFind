@@ -4,20 +4,25 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.uzlov.moviefind.databinding.ItemFilmBinding
-import com.uzlov.moviefind.fragments.OnClickListenerAdapter
-import com.uzlov.moviefind.model.TestFilm
+import com.uzlov.moviefind.interfaces.IOnClickListenerAdapter
+import com.uzlov.moviefind.model.Result
 
-class PopularFilmsAdapter(var listenerClick: OnClickListenerAdapter) :
+class PopularFilmsAdapter(var listenerClick: IOnClickListenerAdapter) :
     RecyclerView.Adapter<PopularFilmsAdapter.PopularFilmsHolder>() {
-    private val mListFilms: MutableList<TestFilm> = mutableListOf()
+    private val mListFilms: MutableList<Result> = mutableListOf()
 
 
-    fun addFilm(film: TestFilm) {
+    fun addFilm(film: Result) {
         mListFilms.add(film)
         notifyItemInserted(mListFilms.size)
     }
 
-    fun setTestFilms(films: List<TestFilm>) {
+    override fun onViewRecycled(holder: PopularFilmsHolder) {
+        super.onViewRecycled(holder)
+
+    }
+
+    fun setTestFilms(films: List<Result>) {
         mListFilms.run {
             clear()
             addAll(films)
@@ -39,14 +44,7 @@ class PopularFilmsAdapter(var listenerClick: OnClickListenerAdapter) :
 
     inner class PopularFilmsHolder(private val binding: ItemFilmBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(film: TestFilm) {
-            with(binding) {
-                nameFilmTV.text = film.name
-                genreFilmTVLabel.text = film.genre
-                root.setOnClickListener {
-                    listenerClick.onClick(adapterPosition)
-                }
-            }
+        fun onBind(film: Result) {
         }
     }
 }

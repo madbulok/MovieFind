@@ -1,28 +1,52 @@
 package com.uzlov.moviefind.viewmodels
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.uzlov.moviefind.database.FilmEntityDB
+import com.uzlov.moviefind.model.Credits
+import com.uzlov.moviefind.repository.RepositoryLocalData
 
 import com.uzlov.moviefind.repository.RepositoryPopularImpl
 
 class FilmsViewModel : ViewModel() {
-    private var liveDataToObserve: MutableLiveData<AppStateFilms> = MutableLiveData()
 
     fun getPopularFilms() : LiveData<AppStateFilms>{
-        getLocalDataFilms()
-        return liveDataToObserve
+        return getLocalDataFilms()
+    }
+
+    fun getFilmsByName(name : String, isAdult: Boolean = false) : LiveData<AppStateFilms>{
+        return RepositoryPopularImpl.searchFilmsByName(name, isAdult)
+    }
+
+    fun getMyFavoritesFilms() : LiveData<List<FilmEntityDB>> {
+        return RepositoryLocalData.loadFavoriteFilms()
     }
 
     fun getFilmById(id: Int) : LiveData<AppStateFilm> {
         return RepositoryPopularImpl.loadFilmById(id)
     }
 
-    private fun getLocalDataFilms(){
-        liveDataToObserve = RepositoryPopularImpl.loadPopular()
+    fun getCreditFilmByID(id: Int) : LiveData<Credits> {
+        return RepositoryPopularImpl.getCreditsMoviesById(id)
+    }
+
+    private fun getLocalDataFilms() : LiveData<AppStateFilms>{
+        return RepositoryPopularImpl.loadPopular()
     }
 
     fun getTopRatedFilms() : LiveData<AppStateFilms> {
         return RepositoryPopularImpl.loadTopRatedFilms()
+    }
+
+    fun addFilmToFavorite(film : FilmEntityDB){
+        RepositoryLocalData.addFavoriteFilm(film)
+    }
+
+    fun filmIsFavorite(id: Int) : LiveData<Int> {
+        return RepositoryLocalData.checkFilmIsFavorite(id)
+    }
+
+    fun removeFilmFromSavedFavorite(id: Long){
+        RepositoryLocalData.removeFilmFromFavorite(id)
     }
 }

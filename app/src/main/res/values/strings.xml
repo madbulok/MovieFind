@@ -111,4 +111,8 @@
     <string name="text_ok">Ок</string>
     <string name="text_more">Ещё...</string>
     <string name="recommend_label">Рекомендуем</string>
+    <string name="open_settings_label">Открыть настройки</string>
+    <string name="maybe_error_with_network">Кажется проблемы с сетью...</string>
+    <string name="funny_string">Кек! Работает!</string>
+    <string name="string_from_moviefind">Это уведомление из MovieFind</string>
 </resources>
