@@ -18,4 +18,5 @@
     <string name="open_settings_label">Открыть настройки</string>
     <string name="funny_string">Кек! Работает!</string>
     <string name="string_from_moviefind">Это уведомление из MovieFind</string>
+    <string name="populate_label">Популярные</string>
 </resources>

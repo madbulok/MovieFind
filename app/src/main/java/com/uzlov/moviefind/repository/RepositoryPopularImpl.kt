@@ -22,8 +22,8 @@ object RepositoryPopularImpl : Loadable {
         .Builder()
         .baseUrl(Constants.API_URL)
         .addConverterFactory(GsonConverterFactory.create(
-            GsonBuilder().setLenient().create()
-        )
+                GsonBuilder().setLenient().create()
+            )
         )
         .build().create(FilmApi::class.java)
 

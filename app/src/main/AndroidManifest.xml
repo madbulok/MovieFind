@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"
+        android:name=".application.App"
         android:theme="@style/Theme.MovieFind">
         <activity
             android:name=".HostActivity"
