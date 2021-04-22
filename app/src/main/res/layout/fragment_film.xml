@@ -36,6 +36,17 @@
             app:iconGravity="textEnd"/>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/shareBtn"
+            android:layout_width="@dimen/size_button_toolbar"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_send_24"
+            app:layout_constraintBottom_toBottomOf="@id/image"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="32dp"
+            android:background="@color/transparent"
+            app:iconGravity="textEnd"/>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/backButton"
             android:layout_width="@dimen/size_button_toolbar"
             android:layout_height="wrap_content"
