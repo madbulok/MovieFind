@@ -19,4 +19,5 @@
     <string name="funny_string">Кек! Работает!</string>
     <string name="string_from_moviefind">Это уведомление из MovieFind</string>
     <string name="populate_label">Популярные</string>
+    <string name="share_friends">Поделись с друзьями</string>
 </resources>
