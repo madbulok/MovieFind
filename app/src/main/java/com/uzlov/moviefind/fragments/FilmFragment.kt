@@ -1,5 +1,6 @@
 package com.uzlov.moviefind.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.uzlov.moviefind.R
+import com.uzlov.moviefind.activities.ShareActivity
 import com.uzlov.moviefind.database.FilmEntityDB
 import com.uzlov.moviefind.databinding.FragmentFilmBinding
 import com.uzlov.moviefind.model.Film
@@ -62,14 +64,14 @@ class FilmFragment : Fragment() {
         viewBinding.recyclerViewActor.apply {
             adapter = adapterActor
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-            addItemDecoration(MyItemDecorator(1), RecyclerView.HORIZONTAL)
+            addItemDecoration(MyItemDecorator(RecyclerView.HORIZONTAL), RecyclerView.HORIZONTAL)
         }
 
         viewModel.getFilmById(idFilm).observe(viewLifecycleOwner, {
             renderData(it)
         })
 
-        viewModel.getCreditFilmByID(idFilm).observe(viewLifecycleOwner, { it ->
+        viewModel.getCreditFilmByID(idFilm).observe(viewLifecycleOwner, {
             it.cast.map { actor->
                 adapterActor.addActor(actor)
             }
@@ -86,10 +88,10 @@ class FilmFragment : Fragment() {
                 }
             }
         })
-        initListenerSaveFilm()
+        initListenerActionsFilm()
     }
 
-    private fun initListenerSaveFilm() {
+    private fun initListenerActionsFilm() {
         viewBinding.favoriteBtn.setOnClickListener {
             when(isAddedFavorite){
                 true->{
@@ -108,6 +110,15 @@ class FilmFragment : Fragment() {
                     )
                 }
             }
+        }
+
+        viewBinding.shareBtn.setOnClickListener {
+            val intent = Intent(requireContext(), ShareActivity::class.java)
+            intent.apply {
+                putExtra("key_name", film.title)
+                putExtra("key_url", film.homepage)
+            }
+            startActivity(intent)
         }
     }
 
@@ -130,9 +141,13 @@ class FilmFragment : Fragment() {
             if (it.production_companies.isNotEmpty()) studioFilm.text = it.production_companies[0].name
             yearFilmTv.text = it.release_date
 
+            if (film.adult) titleTv.append(" 18+")
+
             it.genres.map {
                 genreFilmTv.append("${it.name} \n")
             }
+
+            countVoteTV.text = film.vote_count.toString()
 
             Glide.with(image.context)
                 .load(it.getImageOriginal())

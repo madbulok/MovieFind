@@ -8,13 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.database.FilmEntityDB
 import com.uzlov.moviefind.databinding.PopularFilmsFragmentBinding
 import com.uzlov.moviefind.interfaces.IOnClickListenerAdapter
 import com.uzlov.moviefind.ui.MyItemDecorator
-import com.uzlov.moviefind.ui.PopularFilmsAdapter
+import com.uzlov.moviefind.ui.FavoriteFilmsAdapter
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
 
 class FavoriteFilmsFragment : Fragment(), IOnClickListenerAdapter {
@@ -25,7 +24,7 @@ class FavoriteFilmsFragment : Fragment(), IOnClickListenerAdapter {
 
     private var _viewBinding: PopularFilmsFragmentBinding?=null
     private val viewBinding get() = _viewBinding!!
-    private var popularFilmsAdapter : PopularFilmsAdapter = PopularFilmsAdapter(this)
+    private var popularFilmsAdapter : FavoriteFilmsAdapter = FavoriteFilmsAdapter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _viewBinding = PopularFilmsFragmentBinding.inflate(layoutInflater, container, false)

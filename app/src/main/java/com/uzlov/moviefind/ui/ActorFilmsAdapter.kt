@@ -6,19 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.ItemActorBinding
+import com.uzlov.moviefind.model.Cast
 
 class ActorFilmsAdapter : RecyclerView.Adapter<ActorFilmsHolder>() {
-    private val mListFilms:MutableList<String> = mutableListOf()
-
-    init {
-        mListFilms.add("Арнольд \n Цварцнеггер")
-        mListFilms.add("Майкл \n Бин")
-        mListFilms.add("Линда \n Хэмилтон")
-        mListFilms.add("Поп \n Уинфилд")
-        mListFilms.add("Лэн \n Хенриксен")
-        mListFilms.add("Бесс \n Мотта")
-        mListFilms.add("Эрл \n Боэн")
-    }
+    private val mListFilms:MutableList<Cast> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActorFilmsHolder {
         val binding = ItemActorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -36,16 +27,20 @@ class ActorFilmsAdapter : RecyclerView.Adapter<ActorFilmsHolder>() {
 
     override fun getItemCount(): Int  = mListFilms.size
 
+    fun addActor(actor: Cast) {
+        mListFilms.add(actor)
+        notifyItemInserted(mListFilms.size-1)
+    }
 }
 
 class ActorFilmsHolder(private val binding: ItemActorBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun onBind(actor : String){
+    fun onBind(actor : Cast){
         with(binding){
             Glide
                 .with(imageActor.context)
-                .load(R.drawable.ter)
+                .load(actor.getFullImagePath())
                 .into(imageActor)
-            actorName.text = actor
+            actorName.text = actor.original_name.replace(" ", System.getProperty("line.separator") ?: "\n")
         }
     }
 
