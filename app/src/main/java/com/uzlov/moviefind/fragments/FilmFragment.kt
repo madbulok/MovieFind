@@ -23,8 +23,8 @@ import com.uzlov.moviefind.viewmodels.AppStateFilm
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
 
 class FilmFragment : Fragment() {
-    private lateinit var adapterActor: ActorFilmsAdapter
-    private var _viewBinding: FragmentFilmBinding?=null
+    private val adapterActor by lazy { ActorFilmsAdapter(callbackOpenMap) }
+    private var _viewBinding: FragmentFilmBinding? = null
     private val viewBinding get() = _viewBinding!!
     private var isAddedFavorite = false
 
@@ -60,7 +60,6 @@ class FilmFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapterActor = ActorFilmsAdapter()
         viewBinding.recyclerViewActor.apply {
             adapter = adapterActor
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -169,4 +168,15 @@ class FilmFragment : Fragment() {
         super.onDestroyView()
         _viewBinding = null
     }
+
+    private val callbackOpenMap = object : OpenMapListener {
+        override fun open(id: Int) {
+            val fragment = ActorFragment.newInstance(id)
+            parentFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit()
+        }
+    }
+}
+
+interface OpenMapListener {
+    fun open(id: Int)
 }

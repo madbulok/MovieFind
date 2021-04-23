@@ -1,6 +1,7 @@
 package com.uzlov.moviefind.repository
 
 import com.uzlov.moviefind.interfaces.Constants
+import com.uzlov.moviefind.model.ActorDescription
 import com.uzlov.moviefind.model.Credits
 import com.uzlov.moviefind.model.Film
 import com.uzlov.moviefind.model.PopularFilms
@@ -47,4 +48,10 @@ interface FilmApi {
         @Query("include_adult") isAdult: Boolean = true
     ) : Call<PopularFilms>
 
+    @GET("3/person/{person_id}")
+    fun getActorDescriptionById(
+        @Path("person_id") id: Int,
+        @Query("api_key") apikey: String = Constants.API_KEY,
+        @Query("language") language: String = "ru-RU"
+    ): Call<ActorDescription>
 }

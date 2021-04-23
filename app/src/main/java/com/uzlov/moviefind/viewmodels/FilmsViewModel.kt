@@ -1,12 +1,14 @@
 package com.uzlov.moviefind.viewmodels
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.uzlov.moviefind.database.FilmEntityDB
+import com.uzlov.moviefind.model.ActorDescription
 import com.uzlov.moviefind.model.Credits
 import com.uzlov.moviefind.repository.RepositoryLocalData
 
-import com.uzlov.moviefind.repository.RepositoryPopularImpl
+import com.uzlov.moviefind.repository.RepositoryRemoteImpl
 
 class FilmsViewModel : ViewModel() {
 
@@ -15,7 +17,7 @@ class FilmsViewModel : ViewModel() {
     }
 
     fun getFilmsByName(name : String, isAdult: Boolean = false) : LiveData<AppStateFilms>{
-        return RepositoryPopularImpl.searchFilmsByName(name, isAdult)
+        return RepositoryRemoteImpl.searchFilmsByName(name, isAdult)
     }
 
     fun getMyFavoritesFilms() : LiveData<List<FilmEntityDB>> {
@@ -23,19 +25,19 @@ class FilmsViewModel : ViewModel() {
     }
 
     fun getFilmById(id: Int) : LiveData<AppStateFilm> {
-        return RepositoryPopularImpl.loadFilmById(id)
+        return RepositoryRemoteImpl.loadFilmById(id)
     }
 
     fun getCreditFilmByID(id: Int) : LiveData<Credits> {
-        return RepositoryPopularImpl.getCreditsMoviesById(id)
+        return RepositoryRemoteImpl.getCreditsMoviesById(id)
     }
 
     private fun getLocalDataFilms() : LiveData<AppStateFilms>{
-        return RepositoryPopularImpl.loadPopular()
+        return RepositoryRemoteImpl.loadPopular()
     }
 
     fun getTopRatedFilms() : LiveData<AppStateFilms> {
-        return RepositoryPopularImpl.loadTopRatedFilms()
+        return RepositoryRemoteImpl.loadTopRatedFilms()
     }
 
     fun addFilmToFavorite(film : FilmEntityDB){
@@ -48,5 +50,9 @@ class FilmsViewModel : ViewModel() {
 
     fun removeFilmFromSavedFavorite(id: Long){
         RepositoryLocalData.removeFilmFromFavorite(id)
+    }
+
+    fun getActorDescriptionsById(id: Int): MutableLiveData<ActorDescription> {
+        return RepositoryRemoteImpl.getActorDescriptionById(id)
     }
 }
