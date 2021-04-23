@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
 import com.uzlov.moviefind.interfaces.Constants
 import com.uzlov.moviefind.interfaces.Loadable
+import com.uzlov.moviefind.model.ActorDescription
 import com.uzlov.moviefind.model.Credits
 import com.uzlov.moviefind.model.Film
 import com.uzlov.moviefind.model.PopularFilms
@@ -16,7 +17,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RepositoryPopularImpl : Loadable {
+object RepositoryRemoteImpl : Loadable {
 
     private val filmsApi = Retrofit
         .Builder()
@@ -114,6 +115,22 @@ object RepositoryPopularImpl : Loadable {
             }
 
             override fun onFailure(call: Call<Credits>, t: Throwable) {
+            }
+        })
+        return responseLiveData
+    }
+
+    fun getActorDescriptionById(id: Int): MutableLiveData<ActorDescription> {
+        val responseLiveData: MutableLiveData<ActorDescription> = MutableLiveData()
+
+        filmsApi.getActorDescriptionById(id).enqueue(object : Callback<ActorDescription>{
+            override fun onResponse(call: Call<ActorDescription>, response: Response<ActorDescription>) {
+                if (response.isSuccessful){
+                    responseLiveData.postValue(response.body()!!)
+                }
+            }
+
+            override fun onFailure(call: Call<ActorDescription>, t: Throwable) {
             }
         })
         return responseLiveData
