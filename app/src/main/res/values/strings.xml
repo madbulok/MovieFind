@@ -131,4 +131,5 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="share_friends">Поделись с друзьями</string>
+    <string name="default_notification_channel_id">channel_fcm</string>
 </resources>
