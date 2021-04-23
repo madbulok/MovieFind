@@ -1,50 +1,46 @@
 package com.uzlov.moviefind.services
 
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.uzlov.moviefind.HostActivity
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
 import com.uzlov.moviefind.R
+import com.uzlov.moviefind.activities.HostActivity
 
-class SampleService  : Service() {
-    private val CHANNEL_ID: String = "ForegroundServiceChannel"
+class SampleService  : FirebaseMessagingService() {
+    private val NOTIFICATION_ID : Int = 1
+    private val CHANNEL_ID  by lazy {resources.getString(R.string.default_notification_channel_id)}
 
     companion object{
-        val VALUE_KEY: String = "sample_key"
-        val ACTION = "ACTION_SAMPLE_SERVICE"
+        const val VALUE_KEY: String = "sample_key"
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        createNotificationChannel()
+    override fun onNewToken(p0: String) {
+        super.onNewToken(p0)
+    }
+
+    override fun onMessageReceived(message: RemoteMessage) {
+
+       val manager =  createNotificationChannel()
         val notificationIntent = Intent(this, HostActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this,
-            0, notificationIntent, 0)
-        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0, notificationIntent, 0
+        )
+        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.funny_string))
             .setSmallIcon(R.drawable.ic_baseline_favorite_border_24)
+            .setContentText(message.notification?.body ?: "Empty body")
             .setContentIntent(pendingIntent)
-            .build()
-        startForeground(1, notification)
 
-        Thread {
-            for (i in 0..5){
-                Thread.sleep(1000)
-                val data = Intent().apply {
-                    putExtra(VALUE_KEY, (i % 2 == 0).toString())
-                    action = ACTION
-                }
-                sendBroadcast(data)
-                if (i == 4) stopSelf()
-            }
-        }.start()
-
-        return START_STICKY
+        manager?.notify(NOTIFICATION_ID, notificationBuilder.build())
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationChannel() : NotificationManager? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
@@ -53,10 +49,8 @@ class SampleService  : Service() {
             )
             val manager = getSystemService(NotificationManager::class.java)
             manager.createNotificationChannel(serviceChannel)
+            return manager
         }
-    }
-
-    override fun onBind(p0: Intent?): IBinder? {
         return null
     }
 }
