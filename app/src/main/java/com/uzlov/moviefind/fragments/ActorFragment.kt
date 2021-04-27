@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.FragmentMapsBinding
-import com.uzlov.moviefind.repository.RepositoryRemoteImpl
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.uzlov.moviefind
+package com.uzlov.moviefind.activities
 
 import com.uzlov.moviefind.services.SampleService
 import android.content.BroadcastReceiver
@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.ActivityMainBinding
 import com.uzlov.moviefind.fragments.*
 import com.uzlov.moviefind.services.NetworkListener
@@ -42,7 +43,7 @@ class HostActivity : AppCompatActivity() {
                     setActiveFragment(homeFragment)
                     true
                 }
-                R.id.menu_favorite-> {
+                R.id.menu_favorite -> {
                     setActiveFragment(popularFilmsFragment)
                     true
                 }
@@ -53,7 +54,11 @@ class HostActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
         startNetworkListener()
+
+        val intent = Intent(this, SampleService::class.java)
+        startService(intent)
     }
 
     private fun startNetworkListener(){

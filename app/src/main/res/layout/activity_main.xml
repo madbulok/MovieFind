@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:viewBindingIgnore="false"
-    tools:context=".HostActivity">
+    tools:context=".activities.HostActivity">
 
 
 

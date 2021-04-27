@@ -10,4 +10,5 @@
     <dimen name="corner_radius_search_et">32dp</dimen>
     <dimen name="size_warning_picture">100dp</dimen>
     <dimen name="fonts_size_phone">18sp</dimen>
+    <dimen name="height_map">300dp</dimen>
 </resources>

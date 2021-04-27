@@ -20,4 +20,5 @@
     <string name="string_from_moviefind">Это уведомление из MovieFind</string>
     <string name="populate_label">Популярные</string>
     <string name="share_friends">Поделись с друзьями</string>
+    <string name="default_notification_channel_id">channel_fcm</string>
 </resources>
