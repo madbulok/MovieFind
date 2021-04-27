@@ -11,7 +11,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.activities.HostActivity
 
-class SampleService  : FirebaseMessagingService() {
+class MessagingService  : FirebaseMessagingService() {
     private val NOTIFICATION_ID : Int = 1
     private val CHANNEL_ID  by lazy {resources.getString(R.string.default_notification_channel_id)}
 

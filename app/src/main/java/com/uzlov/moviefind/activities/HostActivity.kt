@@ -1,6 +1,6 @@
 package com.uzlov.moviefind.activities
 
-import com.uzlov.moviefind.services.SampleService
+import com.uzlov.moviefind.services.MessagingService
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -57,7 +57,7 @@ class HostActivity : AppCompatActivity() {
 
         startNetworkListener()
 
-        val intent = Intent(this, SampleService::class.java)
+        val intent = Intent(this, MessagingService::class.java)
         startService(intent)
     }
 
@@ -125,7 +125,7 @@ class HostActivity : AppCompatActivity() {
     private inner class SampleReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent.let {
-                Toast.makeText(context, intent?.getStringExtra(SampleService.VALUE_KEY), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, intent?.getStringExtra(MessagingService.VALUE_KEY), Toast.LENGTH_SHORT).show()
             }
         }
     }
