@@ -24,6 +24,12 @@ interface FilmApi {
         @Query("language") language:String = "ru-RU",
     ) : Call<PopularFilms>
 
+    @GET("3/movie/upcoming")
+    fun getUpcomingFilms(
+        @Query("api_key") apikey:String = Constants.API_KEY,
+        @Query("language") language:String = "ru-RU",
+    ) : Call<PopularFilms>
+
 
     @GET("3/movie/{id}")
     fun getFilmById(

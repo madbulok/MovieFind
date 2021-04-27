@@ -10,21 +10,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.uzlov.moviefind.R
 import com.uzlov.moviefind.databinding.FragmentHomeBinding
 import com.uzlov.moviefind.interfaces.IOnClickListenerAdapter
 import com.uzlov.moviefind.model.PopularFilms
 import com.uzlov.moviefind.ui.FilmAdapter
+import com.uzlov.moviefind.ui.MyItemDecorator
 import com.uzlov.moviefind.viewmodels.AppStateFilms
 import com.uzlov.moviefind.viewmodels.FilmsViewModel
+import com.uzlov.moviefind.viewmodels.TypeFilms
 
 class HomeFragment : Fragment(), IOnClickListenerAdapter , SharedPreferences.OnSharedPreferenceChangeListener{
 
     private var enableAdult: Boolean = false
-    private lateinit var adapterPopularFilms: FilmAdapter
-    private lateinit var adapterTopFilms: FilmAdapter
+    private val adapterPopularFilms by lazy { FilmAdapter(this) }
+    private val adapterTopFilms by lazy { FilmAdapter(this) }
+    private val adapterUpcomingFilms by lazy { FilmAdapter(this) }
+    private val adapterSearchedFilms by lazy { FilmAdapter(this) }
     private var _viewBinding: FragmentHomeBinding? = null
     private val viewBinding get() = _viewBinding!!
     private val viewModel: FilmsViewModel by lazy {
@@ -35,14 +41,46 @@ class HomeFragment : Fragment(), IOnClickListenerAdapter , SharedPreferences.OnS
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             if (count == 0) {
-                loadData()
-                viewBinding.recommendRV.visibility = View.VISIBLE
+                viewBinding.scrollContainer.visibility = View.VISIBLE
+                viewBinding.searchRV.visibility = View.GONE
             }
             viewModel.getFilmsByName(s.toString(), enableAdult).observe(viewLifecycleOwner, { state ->
-               renderSearchResult(state)
+                renderSearchResult(state)
             })
         }
         override fun afterTextChanged(s: Editable?) {}
+    }
+
+    private val onClickCallback = View.OnClickListener {
+        when(it){
+            viewBinding.morePopularTV -> {
+                val fragment = ListFilmsFragment.getInstance(TypeFilms.PopularFilm)
+                parentFragmentManager.beginTransaction().run {
+                    hide(this@HomeFragment)
+                    add(R.id.fragment_container, fragment)
+                    addToBackStack(null)
+                    commit()
+                }
+            }
+            viewBinding.moreRecommendTV -> {
+                val fragment = ListFilmsFragment.getInstance(TypeFilms.RecommendFilm)
+                parentFragmentManager.beginTransaction().run {
+                    hide(this@HomeFragment)
+                    add(R.id.fragment_container, fragment)
+                    addToBackStack(null)
+                    commit()
+                }
+            }
+            viewBinding.moreUpComingTV -> {
+                val fragment = ListFilmsFragment.getInstance(TypeFilms.UpcomingFilm)
+                parentFragmentManager.beginTransaction().run {
+                    hide(this@HomeFragment)
+                    add(R.id.fragment_container, fragment)
+                    addToBackStack(null)
+                    commit()
+                }
+            }
+        }
     }
 
     private fun renderSearchResult(state: AppStateFilms){
@@ -54,14 +92,11 @@ class HomeFragment : Fragment(), IOnClickListenerAdapter , SharedPreferences.OnS
                 showLoading()
             }
             is AppStateFilms.Success -> {
-                showSearchResult(state.filmsData)
+                viewBinding.scrollContainer.visibility = View.GONE
+                viewBinding.searchRV.visibility = View.VISIBLE
+                showSearchResultFilm(state.filmsData)
             }
         }
-    }
-
-    private fun showSearchResult(state: PopularFilms) {
-        showDataPopularFilms(state)
-        viewBinding.recommendRV.visibility = View.GONE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,11 +114,19 @@ class HomeFragment : Fragment(), IOnClickListenerAdapter , SharedPreferences.OnS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapterTopFilms = FilmAdapter(this)
-        adapterPopularFilms = FilmAdapter(this)
+
+        initListeners()
         loadData()
         PreferenceManager.getDefaultSharedPreferences(requireContext()).registerOnSharedPreferenceChangeListener(this)
         viewBinding.nameFilmSearchTv.addTextChangedListener(textWatcher)
+    }
+
+    private fun initListeners() {
+        with(viewBinding){
+            morePopularTV.setOnClickListener(onClickCallback)
+            moreUpComingTV.setOnClickListener(onClickCallback)
+            moreRecommendTV.setOnClickListener(onClickCallback)
+        }
     }
 
     fun loadData() {
@@ -94,6 +137,26 @@ class HomeFragment : Fragment(), IOnClickListenerAdapter , SharedPreferences.OnS
         viewModel.getPopularFilms().observe(viewLifecycleOwner, {
             renderDataPopularFilms(it)
         })
+
+        viewModel.getUpcomingFilms().observe(viewLifecycleOwner, {
+            renderUpcomingFilms(it)
+        })
+    }
+
+    private fun renderUpcomingFilms(state: AppStateFilms) {
+        when (state) {
+            is AppStateFilms.Success -> showUpcomingFilms(state.filmsData)
+            is AppStateFilms.Loading -> showLoading()
+            is AppStateFilms.Error -> showError(state.error)
+        }
+    }
+
+    private fun showUpcomingFilms(films: PopularFilms) {
+        viewBinding.upcomingRV.apply {
+            adapterUpcomingFilms.setFilms(films.results)
+            adapter = adapterUpcomingFilms
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
     }
 
     private fun renderDataTopFilms(state: AppStateFilms) {
@@ -117,6 +180,15 @@ class HomeFragment : Fragment(), IOnClickListenerAdapter , SharedPreferences.OnS
             adapterPopularFilms.setFilms(films.results)
             adapter = adapterPopularFilms
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
+    }
+
+    private fun showSearchResultFilm(films : PopularFilms) {
+        adapterSearchedFilms.setFilms(films.results)
+        viewBinding.searchRV.apply {
+            adapter = adapterSearchedFilms
+            layoutManager = GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
+            addItemDecoration(MyItemDecorator(RecyclerView.VERTICAL))
         }
     }
 
