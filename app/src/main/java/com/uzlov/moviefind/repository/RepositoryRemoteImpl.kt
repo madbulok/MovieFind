@@ -1,6 +1,5 @@
 package com.uzlov.moviefind.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
 import com.uzlov.moviefind.interfaces.Constants
@@ -9,7 +8,6 @@ import com.uzlov.moviefind.model.ActorDescription
 import com.uzlov.moviefind.model.Credits
 import com.uzlov.moviefind.model.Film
 import com.uzlov.moviefind.model.PopularFilms
-import com.uzlov.moviefind.viewmodels.AppStateFilms
 import com.uzlov.moviefind.viewmodels.AppStateFilm
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,23 +26,16 @@ object RepositoryRemoteImpl : Loadable {
         )
         .build().create(FilmApi::class.java)
 
-    override fun loadPopular() : MutableLiveData<AppStateFilms> {
-        val responseLiveData: MutableLiveData<AppStateFilms> = MutableLiveData()
+    override fun loadPopular(callback: Callback<PopularFilms>) {
+        filmsApi.getPopularFilms().enqueue(callback)
+    }
 
-        filmsApi.getPopularFilms().enqueue(object : Callback<PopularFilms> {
-            override fun onResponse(call: Call<PopularFilms>, response: Response<PopularFilms>) {
-                if (response.isSuccessful){
-                    responseLiveData.postValue(AppStateFilms.Success(filmsData = response.body()!!))
-                }else {
-                    responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${response.code()}"))
-                }
-            }
+    fun loadUpcoming(callback: Callback<PopularFilms>) {
+        filmsApi.getUpcomingFilms().enqueue(callback)
+    }
 
-            override fun onFailure(call: Call<PopularFilms>, t: Throwable) {
-                responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${t.message}"))
-            }
-        })
-        return responseLiveData
+    override fun loadTopRatedFilms(call: Callback<PopularFilms>){
+        filmsApi.getTopFilms().enqueue(call)
     }
 
     override fun loadFilmById(id: Int): MutableLiveData<AppStateFilm> {
@@ -66,42 +57,12 @@ object RepositoryRemoteImpl : Loadable {
         return responseLiveData
     }
 
-    override fun loadTopRatedFilms(): MutableLiveData<AppStateFilms> {
-        val responseLiveData: MutableLiveData<AppStateFilms> = MutableLiveData()
-
-        filmsApi.getTopFilms().enqueue(object : Callback<PopularFilms> {
-            override fun onResponse(call: Call<PopularFilms>, response: Response<PopularFilms>) {
-                if (response.isSuccessful){
-                    responseLiveData.postValue(AppStateFilms.Success(filmsData = response.body()!!))
-                } else {
-                    responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${response.code()}"))
-                }
-            }
-
-            override fun onFailure(call: Call<PopularFilms>, t: Throwable) {
-                responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${t.message}"))
-            }
-        })
-        return responseLiveData
-    }
-
-    fun searchFilmsByName(name: String, isAdult: Boolean = false): LiveData<AppStateFilms> {
-        val responseLiveData: MutableLiveData<AppStateFilms> = MutableLiveData()
-
-        filmsApi.searchFilmByName(name = name, isAdult = isAdult).enqueue(object : Callback<PopularFilms> {
-            override fun onResponse(call: Call<PopularFilms>, response: Response<PopularFilms>) {
-                if (response.isSuccessful){
-                    responseLiveData.postValue(AppStateFilms.Success(filmsData = response.body()!!))
-                } else {
-                    responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${response.code()}"))
-                }
-            }
-
-            override fun onFailure(call: Call<PopularFilms>, t: Throwable) {
-                responseLiveData.value = AppStateFilms.Error(error = Throwable("Ошибка сервера ${t.message}"))
-            }
-        })
-        return responseLiveData
+    fun searchFilmsByName(
+        name: String,
+        isAdult: Boolean = false,
+        callback: Callback<PopularFilms>
+    ){
+        filmsApi.searchFilmByName(name = name, isAdult = isAdult).enqueue(callback)
     }
 
     fun getCreditsMoviesById(id: Int): MutableLiveData<Credits> {
